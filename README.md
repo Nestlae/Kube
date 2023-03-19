@@ -3,6 +3,8 @@
 **Reference**
 - [iamapinan / kubeplay-traefik](https://github.com/iamapinan/kubeplay-traefik)
 - [Itarun Pitimon / myKube Ep9 Kubernetes install on windows minikube](https://youtu.be/g-9H2urCSVY)
+- [rancher / hello-world](https://github.com/rancher/hello-world)
+- [traefik / traefik](https://github.com/traefik/traefik/blob/master/docs/content/routing/providers/kubernetes-crd.md)
 
 **WakaTime - Kube**
 - [https://wakatime.com/@spcn26/projects/msqzcevomf](https://wakatime.com/@spcn26/projects/msqzcevomf)
@@ -160,8 +162,9 @@ kubectl get nodes
 ```
 minikube dashboard
 ```
+<div align="center"><img src="images/19.png" width="900px"></div>
 
-<div align="center"><img src="images/12.png" width="700px"></div>
+<div align="center"><img src="images/12.png" width="900px"></div>
 
 </details>
 
@@ -269,7 +272,7 @@ metadata:
     traefik.ingress.kubernetes.io/router.middlewares: traefik-basic-authen
 spec:
   entryPoints:
-    - websecure
+    - websecure #https entrypoint
   routes:
     - match: Host(`traefik.spcn26.local`) && (PathPrefix(`/dashboard`) || PathPrefix(`/api`))
       kind: Rule
@@ -287,6 +290,8 @@ spec:
 kubectl apply -f traefik-dashboard.yaml #deploy traefik dashboard
 minikube tunnel #start loadbalance
 ```
+
+<div align="center"><img src="images/20.png" width="900px"></div>
 
 12. Determine the domain name by going to the file path below and opening it with Notepad (Run as administrator).
 
@@ -309,5 +314,136 @@ C:\Windows\System32\drivers\etc\hosts
 <div align="center"><img src="images/15.png" width="700px"></div>
 
 **Ref** - *https://github.com/iamapinan/kubeplay-traefik*
+
+</details>
+
+<details>
+    <summary>rancher/hello-world deployment</summary>
+
+**Before starting instruction, If you want to change the namespaces. Run the command below.**
+
+```ruby
+kubectl create namespace <namespace> #create a new namespace
+kubectl config set-context --current --namespace=<namespace> #set the namespace as default
+```
+
+1. Create ["rancher-deployment.yaml"](https://github.com/Nestlae/Kube/blob/master/rancher-deployment.yaml) for rancher application deployment.
+
+```yaml
+apiVersion: apps/v1 #in apiVersion v1beta1 and v1beta2 are not supported in kubernetes
+kind: Deployment #deployment part
+metadata:
+  labels:
+    app: hello-world
+  name: hello-world
+  namespace: rancher #namespace that you want to install an application
+spec:
+  replicas: 1 #number of containers which can be run
+  selector: #pod selector 
+    matchLabels: #pod label
+      app: hello-world
+  template:
+    metadata:
+      labels:
+        app: hello-world
+    spec: #pod specification
+      containers: #build container
+      - image: rancher/hello-world #image for build a container
+        name: hello-world
+        ports:
+        - containerPort: 80 #container port specification
+          protocol: TCP 
+---
+#service part
+#create a service and set the selector to hello-world app using port 80
+apiVersion: v1
+kind: Service
+metadata:
+  name: hello-world #service name
+  namespace: rancher
+spec:
+  ports:
+  - port: 80 #port running on host
+    protocol: TCP #service protocol
+    targetPort: 80 #port running on container
+  selector:
+    app: hello-world
+```
+> **Ref** : *https://github.com/rancher/hello-world*
+
+2. Create ["rancher-ingress.yaml"](https://github.com/Nestlae/Kube/blob/master/rancher-ingress.yaml) for rancher application deployment routing.
+
+```yaml
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute #define an object for routing setup
+metadata:
+  name: traefik-ingress
+  namespace: rancher
+spec:
+  entryPoints: #define accessible protocols
+    - web #http - 80
+    - websecure #https - 443/SSL
+  routes:
+  - match: Host(`web.spcn26.local`) #domain
+    kind: Rule
+    services:
+    - name: hello-world #routing to the name service "hello-world" when accessing the domain
+      port: 80 # in port 80
+```
+
+> **Ref** : *https://github.com/iamapinan/kubeplay-traefik*
+
+3. Deploy rancher application, services, routing using below commands.
+
+```ruby
+kubectl apply -f rancher-deployment.yaml #deploy rancher app and rancher services
+kubectl apply -f rancher-ingress.yaml #deploy rancher routing
+```
+
+4. Determine the domain name by going to the file path below and opening it with Notepad (Run as administrator).
+
+```yaml
+C:\Windows\System32\drivers\etc\hosts
+#ex. EXTERNAL-IP web.spcn26.local 
+```
+> EXTERNAL-IP means rancher application's external IP. It's from using command `kubectl get svc`
+
+<div align="center"><img src="images/13.png" width="400px"></div>
+
+5. Save the host file and try the website : https://web.spcn26.local/
+
+<div align="center"><img src="images/16.png" width="700px"></div>
+
+</details>
+
+---
+## **Result**
+
+<details>
+    <summary>Kubernetes dashboard (minikube)</summary>
+
+**URL Local** : http://127.0.0.1:60905/api/v1/namespaces/kubernetes-dashboard/services/http:kubernetes-dashboard:/proxy/
+
+<div align="center"><img src="images/17.png" width="900px"></div>
+
+<div align="center"><img src="images/18.png" width="900px"></div>
+
+</details>
+
+<details>
+    <summary>Traefik dashboard</summary>
+
+**URL Local** : https://traefik.spcn26.local/dashboard/
+
+<div align="center"><img src="images/15.png" width="900px"></div>
+
+</details>
+
+<details>
+    <summary>Rancher application</summary>
+
+**URL Local** : https://web.spcn26.local/ 
+
+<div align="center"><img src="images/16.png" width="900px"></div>
 
 </details>
