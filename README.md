@@ -21,8 +21,10 @@
 
 <details>
     <summary>kubectl</summary>
-    
+
+<a name="kubectl"></a>
 1. Open a command prompt (cmd) and go to path > C:/kubectl
+
 2. Run the command to install kubectl on your computer by following below.
 
 ```ruby
@@ -168,6 +170,6 @@ minikube dashboard
 
 1. Download Helm for windows ([Windows amd64](https://get.helm.sh/helm-v3.11.2-windows-amd64.zip)) in the link : https://github.com/helm/helm/releases
 
-2. Extract the files into "C:/helm" and set the path environment. (You can follow instructions similar to installing kubectl.)
+2. Extract the files into "C:/helm" and set the path environment. (You can follow instructions similar to installing kubectl. > [Click here](#kubectl))
 
 </details>
