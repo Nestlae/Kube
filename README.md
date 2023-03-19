@@ -170,6 +170,144 @@ minikube dashboard
 
 1. Download Helm for windows ([Windows amd64](https://get.helm.sh/helm-v3.11.2-windows-amd64.zip)) in the link : https://github.com/helm/helm/releases
 
-2. Extract the files into "C:/helm" and set the path environment. (You can follow instructions similar to installing kubectl. > [Click here](#kubectl))
+2. Extract the files into "C:/helm" and set the path environment. (You can follow instructions similar to installing kubectl in number 3-6. > [Click here](#kubectl))
+
+
+3. Open a command prompt (cmd) in your workspace folder. And install traefik resource definitions (CRD) using command below.
+
+```ruby
+kubectl apply -f https://raw.githubusercontent.com/traefik/traefik/v2.9/docs/content/reference/dynamic-configuration/kubernetes-crd-definition-v1.yml
+```
+
+4. Install RBAC for Traefik using command below.
+
+```ruby
+kubectl apply -f https://raw.githubusercontent.com/traefik/traefik/v2.9/docs/content/reference/dynamic-configuration/kubernetes-crd-rbac.yml
+```
+
+5. Install Traefik Helmchart via Helm.
+
+```ruby
+helm repo add traefik https://traefik.github.io/charts #add traefik to own cluster
+helm repo update #update the traefik files from the repository
+helm install traefik traefik/traefik #install traefik to own cluster
+```
+6. Make sure services and pods are running.
+
+```ruby
+kubectl get svc -l app.kubernetes.io/name=traefik
+kubectl get po -l app.kubernetes.io/name=traefik
+```
+
+7. Run the command below for use the linux commands on command prompt (cmd).
+```ruby
+bash
+```
+
+8. Create a secrete authentication
+
+```ruby
+htpasswd -nB <userName> | tee auth-secret
+```
+>**htpasswd** is used to create and update the flat-files used to store usernames and password for basic authentication of HTTP users.
+**-n** is used to display the results.
+**-B** is used to bcrypt encryption for passwords.
+**tee auth-secret** is used to copy htpasswd text to create a file named "auth-secret".
+
+9. Dry run to create a secret deployment.
+
+```ruby
+kubectl create secret generic -n <namespace> dashboard-auth-secret \
+--from-file=users=auth-secret -o yaml --dry-run=client | tee dashboard-secret.yaml
+```
+> in the namespace, "traefik" is by default.
+
+This will automatic create a deployment file "dashboard-secret.yaml" on your workspace folder.
+
+```yaml
+apiVersion: v1
+data:
+  users: c3BjbjI2OiQyeSQwNSRjUGRERWZ2Z3pZSUtkY1MyUlhWd0YuYnJRaTNuaHRISlBrWEh4WVBwbTFoVUFZY3BTQ3Z1cQoK #copy this section
+kind: Secret
+metadata:
+  creationTimestamp: null
+  name: dashboard-auth-secret
+  namespace: traefik
+```
+
+10. After that, Copy users secret from "dashboard-secret.yaml" and replace in ["traefik-dashboard.yaml"](https://github.com/Nestlae/Kube/blob/master/traefik-dashboard.yaml)
+
+```yaml
+#create middleware named dashboard-auth-secret
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: traefik-basic-authen
+  namespace: default #namespaces that you previously deployed, if nothing changes before (in number 9 commend). use the default
+spec:
+  basicAuth:
+    secret: dashboard-auth-secret
+    removeHeader: true
+---
+#deploy the secret that we use for authentication
+apiVersion: v1
+data:
+  users: c3BjbjI2OiQyeSQwNSRjUGRERWZ2Z3pZSUtkY1MyUlhWd0YuYnJRaTNuaHRISlBrWEh4WVBwbTFoVUFZY3BTQ3Z1cQoK #paste an users secret here
+kind: Secret
+metadata:
+  name: dashboard-auth-secret
+  namespace: default
+---
+#define routing to traefik that if we go to the domain name "traefik.spcn26.local". It will send the request to api@internal, but in the middlewares part requires basic authentication first.
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-dashboard
+  namespace: default
+  annotations:
+    kubernetes.io/ingress.class: traefik
+    traefik.ingress.kubernetes.io/router.middlewares: traefik-basic-authen
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`traefik.spcn26.local`) && (PathPrefix(`/dashboard`) || PathPrefix(`/api`))
+      kind: Rule
+      middlewares:
+        - name: traefik-basic-authen
+          namespace: default
+      services:
+        - name: api@internal
+          kind: TraefikService
+```
+
+11. Enable traefik dashbaord and start LoadBalance on minikube using below commands.
+
+```ruby
+kubectl apply -f traefik-dashboard.yaml #deploy traefik dashboard
+minikube tunnel #start loadbalance
+```
+
+12. Determine the domain name by going to the file path below and opening it with Notepad (Run as administrator).
+
+```yaml
+C:\Windows\System32\drivers\etc\hosts
+#ex. EXTERNAL-IP traefik.spcn26.local 
+```
+> EXTERNAL-IP means Traefik's external IP. It's from using command `kubectl get svc`
+
+<div align="center"><img src="images/13.png" width="400px"></div>
+
+13. Save the host file and try the website : https://traefik.spcn26.local/dashboard/
+
+<div align="center"><img src="images/14.png" width="700px"></div>
+
+> The username and password come from establishing a secret authentication. (in number 8)
+
+14. It will show the traefik dashboard if you done it right.
+
+<div align="center"><img src="images/15.png" width="700px"></div>
+
+**Ref** - *https://github.com/iamapinan/kubeplay-traefik*
 
 </details>
