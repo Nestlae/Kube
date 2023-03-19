@@ -32,23 +32,23 @@
 curl.exe -LO "https://dl.k8s.io/release/v1.26.0/bin/windows/amd64/kubectl.exe"
 ```
 3. Go to "Edit environment variables for your account" by searching for it in the start menu
-<div align="center"><img src="images/1.png" width="400px"></div>
+<div align="center"><img src="images/1.png" width="700px"></div>
 
 4. Then click "Environment Variables..." button to set kubectl path.
-<div align="center"><img src="images/2.png" width="300px"></div>
+<div align="center"><img src="images/2.png" width="500px"></div>
 
 5. Click "Path" on number 1 and click "Edit" button on number 2.
-<div align="center"><img src="images/3.png" width="400px"></div>
+<div align="center"><img src="images/3.png" width="600px"></div>
 
 6. Click "New" button on number 1 and add the path "C:/kubectl" on number 2 then click "OK" to save the path.
-<div align="center"><img src="images/4.png" width="300px"></div>
+<div align="center"><img src="images/4.png" width="500px"></div>
 
 7. Make sure **kubectl** is successfully installed by running the command below.
 
 ```ruby
 kubectl version --client
 ```
-<div align="center"><img src="images/5.png" width="700px"></div>
+<div align="center"><img src="images/5.png" width="900px"></div>
 
 **Ref.** - *https://kubernetes.io/docs/tasks/tools/install-kubectl-windows/*
 
@@ -74,7 +74,7 @@ if ($oldPath.Split(';') -inotcontains 'C:\minikube'){ `
 3. Then a terminal (PowerShell) restart is required.
 
 **Or you can be downloaded as an executable file for easier installation. (Easy step)**
-<div align="center"><img src="images/6.png" width="700px"></div>
+<div align="center"><img src="images/6.png" width="900px"></div>
 
 **Ref.** - *https://minikube.sigs.k8s.io/docs/start/*
 </details>
@@ -83,10 +83,10 @@ if ($oldPath.Split(';') -inotcontains 'C:\minikube'){ `
     <summary>Windows Subsystem for Linux (WSL)</summary>
 
 1. Go to "Turn Windows features on or off" by searching for it in the start menu.
-<div align="center"><img src="images/7.png" width="400px"></div>
+<div align="center"><img src="images/7.png" width="700px"></div>
 
 2. Select the checkbox labeled "Windows Subsystem for Linux".
-<div align="center"><img src="images/8.png" width="300px"></div>
+<div align="center"><img src="images/8.png" width="500px"></div>
 
 3. Click "OK" button and wait the process. After finished, restart the device once.
 
@@ -97,7 +97,7 @@ wsl --update
 ```
 
 5. Check for the latest version using the same command.
-<div align="center"><img src="images/9.png" width="700px"></div>
+<div align="center"><img src="images/9.png" width="900px"></div>
 
 6. Run the command below to make sure WSL is available.
 
@@ -148,14 +148,14 @@ minikube start --driver=docker
 ```
 kubectl get pods -A
 ```
-<div align="center"><img src="images/10.png" width="700px"></div>
+<div align="center"><img src="images/10.png" width="900px"></div>
 
 - Check the nodes on the cluster.
 ```
 kubectl get nodes
 ```
 
-<div align="center"><img src="images/11.png" width="500px"></div>
+<div align="center"><img src="images/11.png" width="900px"></div>
 
 - Open kubernetes dashboard.
 
@@ -305,13 +305,13 @@ C:\Windows\System32\drivers\etc\hosts
 
 13. Save the host file and try the website : https://traefik.spcn26.local/dashboard/
 
-<div align="center"><img src="images/14.png" width="700px"></div>
+<div align="center"><img src="images/14.png" width="7900px"></div>
 
 > The username and password come from establishing a secret authentication. (in number 8)
 
 14. It will show the traefik dashboard if you done it right.
 
-<div align="center"><img src="images/15.png" width="700px"></div>
+<div align="center"><img src="images/15.png" width="900px"></div>
 
 **Ref** - *https://github.com/iamapinan/kubeplay-traefik*
 
@@ -412,7 +412,7 @@ C:\Windows\System32\drivers\etc\hosts
 
 5. Save the host file and try the website : https://web.spcn26.local/
 
-<div align="center"><img src="images/16.png" width="700px"></div>
+<div align="center"><img src="images/16.png" width="900px"></div>
 
 </details>
 
