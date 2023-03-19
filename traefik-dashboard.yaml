@@ -10,7 +10,7 @@ spec:
 ---
 apiVersion: v1
 data:
-  users: c3BjbjI2OiQyeSQwNSRTMmtKaS5jWGJYaGtvQjRwSW1ON2ZPd1YwNld5MTJOZ3d5RENMb1UxeFk0LnhtbjRxOFNPQwoK
+  users: c3BjbjI2OiQyeSQwNSRjUGRERWZ2Z3pZSUtkY1MyUlhWd0YuYnJRaTNuaHRISlBrWEh4WVBwbTFoVUFZY3BTQ3Z1cQoK
 kind: Secret
 metadata:
   name: dashboard-auth-secret
