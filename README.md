@@ -19,10 +19,9 @@
 
 ## **Step for preparing tools**
 
-<details>
-    <summary>kubectl</summary>
+<details open>
+    <summary><a href="kubectl">kubectl</a></summary>
 
-<a name="kubectl"></a>
 1. Open a command prompt (cmd) and go to path > C:/kubectl
 
 2. Run the command to install kubectl on your computer by following below.
@@ -50,6 +49,7 @@ kubectl version --client
 <div align="center"><img src="images/5.png" width="700px"></div>
 
 **Ref.** - *https://kubernetes.io/docs/tasks/tools/install-kubectl-windows/*
+
 </details>
 
 <details>
