@@ -20,7 +20,7 @@
 ## **Step for preparing tools**
 
 <details open>
-    <summary><a href="kubectl">kubectl</a></summary>
+    <summary><a name="kubectl">kubectl</a></summary>
 
 1. Open a command prompt (cmd) and go to path > C:/kubectl
 
